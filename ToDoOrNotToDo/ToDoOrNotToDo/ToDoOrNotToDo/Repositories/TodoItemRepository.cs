@@ -3,18 +3,25 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using ToDoOrNotToDo.Models;
+using SQLite;
+using System.IO;
 
 namespace ToDoOrNotToDo.Repositories
 {
     public class TodoItemRepository : IRepository<TodoItem>
     {
+        private SQLiteAsyncConnection _connection;
+        private const string _databaseName = "TodoItems.db";
+
         public event EventHandler<TodoItem> OnItemAdded;
         public event EventHandler<TodoItem> OnItemUpdated;
         public event EventHandler<TodoItem> OnItemDeleted;
 
-        public Task AddItem(TodoItem item)
+        public async Task AddItem(TodoItem item)
         {
-            throw new NotImplementedException();
+            await CreateConnection();
+            await _connection.InsertAsync(item);
+            OnItemAdded?.Invoke(this, item);
         }
 
         public Task AddOrUpdateItem(TodoItem item)
@@ -27,14 +34,42 @@ namespace ToDoOrNotToDo.Repositories
             return UpdateItem(item);
         }
 
-        public Task<List<TodoItem>> GetItems()
+        public async Task<List<TodoItem>> GetItems()
         {
-            throw new NotImplementedException();
+            await CreateConnection();
+            return await _connection.Table<TodoItem>().ToListAsync();
+
         }
 
-        public Task UpdateItem(TodoItem item)
+        public async Task UpdateItem(TodoItem item)
         {
-            throw new NotImplementedException();
+            await CreateConnection();
+            await _connection.UpdateAsync(item);
+            OnItemUpdated?.Invoke(this, item);
+        }
+
+        private async Task CreateConnection()
+        {
+            if (_connection != null)
+            {
+                return;
+            }
+
+            var documentPath = Environment
+                .GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var databasePath = Path.Combine(documentPath, _databaseName);
+
+            _connection = new SQLiteAsyncConnection(databasePath);
+            await _connection.CreateTableAsync<TodoItem>();
+
+            if (await _connection.Table<TodoItem>().CountAsync() == 0)
+            {
+                await _connection.InsertAsync(new TodoItem()
+                {
+                    Title = "Welcome to the To Do or Not To Do",
+                    Due = DateTimeOffset.Now
+                });
+            }
         }
     }
 }
