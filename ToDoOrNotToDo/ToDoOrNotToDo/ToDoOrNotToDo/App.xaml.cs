@@ -1,4 +1,5 @@
 ﻿using System;
+using ToDoOrNotToDo.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -9,6 +10,7 @@ namespace ToDoOrNotToDo
         public App()
         {
             InitializeComponent();
+            MainPage = new NavigationPage(Resolver.Resolve<MainView>());
         }
 
         protected override void OnStart()
