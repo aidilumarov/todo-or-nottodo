@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ToDoOrNotToDo.Models
 {
-    public class TodoItem
+    public class TodoItem : IItem
     {
         public int Id { get; set; }
 
