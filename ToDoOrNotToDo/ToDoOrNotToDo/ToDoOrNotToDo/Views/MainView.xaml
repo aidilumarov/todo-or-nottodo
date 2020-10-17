@@ -6,7 +6,7 @@
              Title="To Do or Not To Do">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" />
+        <ToolbarItem Text="Add" Command="{Binding AddItem}" />
     </ContentPage.ToolbarItems>
 
     <Grid>
