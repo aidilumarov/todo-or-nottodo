@@ -26,17 +26,17 @@ namespace ToDoOrNotToDo.ViewModels
 
         public MainViewModel(TodoItemRepository todoRepository)
         {
-            _todoRepository.OnItemAdded += (sender, item) =>
+            todoRepository.OnItemAdded += (sender, item) =>
             {
                 TodoItems.Add(CreateTodoItemViewModel(item));
             };
 
-            _todoRepository.OnItemUpdated += (sender, item) =>
+            todoRepository.OnItemUpdated += (sender, item) =>
             {
                 Task.Run(async () => await LoadData());
             };
 
-            _todoRepository.OnItemDeleted += (sender, item) =>
+            todoRepository.OnItemDeleted += (sender, item) =>
             {
                 Task.Run(async () => await LoadData());
             };
