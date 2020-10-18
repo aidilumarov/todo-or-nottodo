@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Input;
 using ToDoOrNotToDo.Models;
+using Xamarin.Forms;
 
 namespace ToDoOrNotToDo.ViewModels
 {
@@ -12,6 +14,12 @@ namespace ToDoOrNotToDo.ViewModels
         public TodoItem TodoItem { get; set; }
 
         public string StatusText => TodoItem.Completed ? "Reactivate" : "Completed";
+
+        public ICommand ToggleCompleted => new Command((arg) =>
+        {
+            TodoItem.Completed = !TodoItem.Completed;
+            ItemStatusChanged?.Invoke(this, new EventArgs());
+        }); 
 
         public TodoItemViewModel(TodoItem todoItem)
         {

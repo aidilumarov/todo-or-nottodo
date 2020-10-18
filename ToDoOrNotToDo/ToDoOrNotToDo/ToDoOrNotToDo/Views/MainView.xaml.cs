@@ -17,6 +17,14 @@ namespace ToDoOrNotToDo.Views
             InitializeComponent();
             viewModel.Navigation = Navigation;
             BindingContext = viewModel;
+
+            // When item is selected, it opens another view with detailed info
+            // Item should be de-selected so we can select it again without
+            // selecting another item
+            ItemsListView.ItemSelected += (s, e) =>
+            {
+                ItemsListView.SelectedItem = null;
+            };
         }
     }
 }

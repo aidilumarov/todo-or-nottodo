@@ -18,6 +18,20 @@ namespace ToDoOrNotToDo.ViewModels
 
         public ObservableCollection<TodoItemViewModel> TodoItems { get; set; }
 
+        public TodoItemViewModel SelectedItem
+        {
+            get { return null; }
+            set
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await NavigateToItemAsync(value);
+                });
+
+                RaisePropertyChanged(nameof(SelectedItem));
+            }
+        }
+
         public ICommand AddItem => new Command(async () =>
         {
             var itemView = Resolver.Resolve<AddUpdateItemView>();
@@ -33,19 +47,19 @@ namespace ToDoOrNotToDo.ViewModels
 
             todoRepository.OnItemUpdated += (sender, item) =>
             {
-                Task.Run(async () => await LoadData());
+                Task.Run(async () => await LoadDataAsync());
             };
 
             todoRepository.OnItemDeleted += (sender, item) =>
             {
-                Task.Run(async () => await LoadData());
+                Task.Run(async () => await LoadDataAsync());
             };
 
             this._todoRepository = todoRepository;
-            Task.Run(async () => { await LoadData(); });
+            Task.Run(async () => { await LoadDataAsync(); });
         }
 
-        private async Task LoadData()
+        private async Task LoadDataAsync()
         {
             var todoItems = await _todoRepository.GetItems();
             var todoItemViewModels = todoItems.Select(i => CreateTodoItemViewModel(i));
@@ -61,7 +75,22 @@ namespace ToDoOrNotToDo.ViewModels
 
         private void ItemStatusChanged(object sender, EventArgs e)
         {
+            var viewModel = sender as TodoItemViewModel;
+            Task.Run(async () => await _todoRepository.UpdateItem(viewModel.TodoItem));
+        }
 
+        private async Task NavigateToItemAsync(TodoItemViewModel item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            var itemView = Resolver.Resolve<AddUpdateItemView>();
+            var viewModel = itemView.BindingContext as AddUpdateItemViewModel;
+            viewModel.TodoItem = item.TodoItem;
+
+            await Navigation.PushAsync(itemView);
         }
     }
 }
