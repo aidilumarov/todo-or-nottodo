@@ -2,9 +2,17 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:ToDoOrNotToDo"
+             xmlns:converters="clr-namespace:ToDoOrNotToDo.Converters"
              x:Class="ToDoOrNotToDo.Views.MainView"
              Title="To Do or Not To Do">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ItemStatusToColorConverter
+                x:Key="itemStatusToColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddItem}" />
     </ContentPage.ToolbarItems>
@@ -29,11 +37,13 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <BoxView Grid.RowSpan="2" />
+                            <BoxView Grid.RowSpan="2" 
+                                     BackgroundColor="{Binding TodoItem.Completed, 
+                                Converter={StaticResource itemStatusToColorConverter}}" />
 
                             <Label Grid.Column="1"
                                    Text="{Binding TodoItem.Title}"
-                                   FontSize="Large" />
+                                   FontSize="Default" />
                             <Label Grid.Column="1"
                                    Grid.Row="1"
                                    Text="{Binding TodoItem.Due}"
