@@ -13,8 +13,6 @@ namespace ToDoOrNotToDo.ViewModels
 
         public TodoItem TodoItem { get; set; }
 
-        public string StatusText => TodoItem.Completed ? "Reactivate" : "Completed";
-
         public ICommand ToggleCompleted => new Command((arg) =>
         {
             TodoItem.Completed = !TodoItem.Completed;

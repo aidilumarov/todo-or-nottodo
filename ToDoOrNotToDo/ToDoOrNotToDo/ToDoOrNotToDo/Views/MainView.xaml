@@ -12,6 +12,8 @@
                 x:Key="itemStatusToColorConverter" />
             <converters:FilterOptionToTextConverter
                 x:Key="filterOptionToTextConverter" />
+            <converters:ItemStatusToToggleCompletedTextConverter
+                x:Key="itemStatusToToggleCompletedTextConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     
@@ -40,7 +42,8 @@
                     <ViewCell>
 
                         <ViewCell.ContextActions>
-                            <MenuItem Text="{Binding StatusText}"
+                            <MenuItem Text="{Binding TodoItem.Completed, 
+                                Converter={StaticResource itemStatusToToggleCompletedTextConverter}}"
                                       Command="{Binding ToggleCompleted}" />
                         </ViewCell.ContextActions>
                         
