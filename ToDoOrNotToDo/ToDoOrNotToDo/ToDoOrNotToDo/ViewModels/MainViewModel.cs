@@ -14,9 +14,17 @@ namespace ToDoOrNotToDo.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
+        #region Fields
+
         private readonly TodoItemRepository _todoRepository;
 
+        #endregion
+
+        #region Properties
+
         public ObservableCollection<TodoItemViewModel> TodoItems { get; set; }
+
+        public bool ShowAll { get; set; }
 
         public TodoItemViewModel SelectedItem
         {
@@ -32,36 +40,56 @@ namespace ToDoOrNotToDo.ViewModels
             }
         }
 
+        #endregion
+
+        #region UICommands
+
         public ICommand AddItem => new Command(async () =>
         {
             var itemView = Resolver.Resolve<AddUpdateItemView>();
             await Navigation.PushAsync(itemView);
         });
 
+        public ICommand ToggleFilter => new Command(async () =>
+        {
+            ShowAll = !ShowAll;
+            await LoadDataAsync();
+        });
+
+        #endregion
+
+        #region Constructors
+
         public MainViewModel(TodoItemRepository todoRepository)
         {
-            todoRepository.OnItemAdded += (sender, item) =>
-            {
-                TodoItems.Add(CreateTodoItemViewModel(item));
-            };
-
-            todoRepository.OnItemUpdated += (sender, item) =>
-            {
-                Task.Run(async () => await LoadDataAsync());
-            };
-
-            todoRepository.OnItemDeleted += (sender, item) =>
-            {
-                Task.Run(async () => await LoadDataAsync());
-            };
+            todoRepository.OnItemAdded += RepositoryUpdated;
+            todoRepository.OnItemUpdated += RepositoryUpdated;
+            todoRepository.OnItemDeleted += RepositoryUpdated;
 
             this._todoRepository = todoRepository;
-            Task.Run(async () => { await LoadDataAsync(); });
+            RepositoryUpdated(this, null);
         }
+
+        #endregion
+
+        #region PrivateMethods
 
         private async Task LoadDataAsync()
         {
-            var todoItems = await _todoRepository.GetItems();
+            List<TodoItem> todoItems;
+
+            if (!ShowAll)
+            {
+                // Load only active items
+                todoItems = await _todoRepository.GetActiveItems();
+            }
+
+            else
+            {
+                // Load all items
+                todoItems = await _todoRepository.GetItems();
+            }
+            
             var todoItemViewModels = todoItems.Select(i => CreateTodoItemViewModel(i));
             TodoItems = new ObservableCollection<TodoItemViewModel>(todoItemViewModels);
         }
@@ -75,8 +103,15 @@ namespace ToDoOrNotToDo.ViewModels
 
         private void ItemStatusChanged(object sender, EventArgs e)
         {
-            var viewModel = sender as TodoItemViewModel;
-            Task.Run(async () => await _todoRepository.UpdateItem(viewModel.TodoItem));
+            if (sender is TodoItemViewModel viewModel)
+            {
+                Task.Run(async () => await _todoRepository.UpdateItem(viewModel.TodoItem));
+            }
+        }
+
+        private void RepositoryUpdated(object sender, TodoItem eventArgument)
+        {
+            Task.Run(async () => await LoadDataAsync());
         }
 
         private async Task NavigateToItemAsync(TodoItemViewModel item)
@@ -92,5 +127,7 @@ namespace ToDoOrNotToDo.ViewModels
 
             await Navigation.PushAsync(itemView);
         }
+
+        #endregion
     }
 }

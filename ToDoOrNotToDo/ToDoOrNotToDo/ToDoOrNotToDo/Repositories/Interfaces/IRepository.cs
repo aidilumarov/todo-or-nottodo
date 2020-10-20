@@ -12,6 +12,7 @@ namespace ToDoOrNotToDo.Repositories
         event EventHandler<T> OnItemDeleted;
 
         Task<List<T>> GetItems();
+        Task<List<T>> GetActiveItems();
         Task AddItem(T item);
         Task UpdateItem(T item);
         Task AddOrUpdateItem(T item);

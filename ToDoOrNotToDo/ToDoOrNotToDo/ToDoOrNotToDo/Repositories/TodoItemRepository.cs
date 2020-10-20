@@ -41,6 +41,12 @@ namespace ToDoOrNotToDo.Repositories
 
         }
 
+        public async Task<List<TodoItem>> GetActiveItems()
+        {
+            await CreateConnection();
+            return await _connection.Table<TodoItem>().Where(x => !x.Completed).ToListAsync();
+        }
+
         public async Task UpdateItem(TodoItem item)
         {
             await CreateConnection();
