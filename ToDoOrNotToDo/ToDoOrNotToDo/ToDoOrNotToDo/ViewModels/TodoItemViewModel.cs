@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
 using ToDoOrNotToDo.Models;
+using ToDoOrNotToDo.Repositories;
 using Xamarin.Forms;
 
 namespace ToDoOrNotToDo.ViewModels
@@ -17,7 +18,12 @@ namespace ToDoOrNotToDo.ViewModels
         {
             TodoItem.Completed = !TodoItem.Completed;
             ItemStatusChanged?.Invoke(this, new EventArgs());
-        }); 
+        });
+
+        public ICommand DeleteItem => new Command(async () =>
+        {
+            await Resolver.Resolve<TodoItemRepository>().DeleteItem(TodoItem);
+        });
 
         public TodoItemViewModel(TodoItem todoItem)
         {

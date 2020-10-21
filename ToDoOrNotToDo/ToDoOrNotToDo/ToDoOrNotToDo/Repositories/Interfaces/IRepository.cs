@@ -14,6 +14,7 @@ namespace ToDoOrNotToDo.Repositories
         Task<List<T>> GetItems();
         Task<List<T>> GetActiveItems();
         Task AddItem(T item);
+        Task DeleteItem(T item);
         Task UpdateItem(T item);
         Task AddOrUpdateItem(T item);
     }

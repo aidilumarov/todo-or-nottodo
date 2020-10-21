@@ -34,6 +34,13 @@ namespace ToDoOrNotToDo.Repositories
             return UpdateItem(item);
         }
 
+        public async Task DeleteItem(TodoItem item)
+        {
+            await CreateConnection();
+            await _connection.DeleteAsync(item);
+            OnItemDeleted?.Invoke(this, item);
+        }
+
         public async Task<List<TodoItem>> GetItems()
         {
             await CreateConnection();

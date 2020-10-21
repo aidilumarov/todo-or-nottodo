@@ -41,51 +41,58 @@
             </Button.Triggers>
         </Button>
 
-        <ListView x:Name="ItemsListView"
-                  Grid.Row="1"
+        <AbsoluteLayout Grid.Row="1">
+            <ListView x:Name="ItemsListView"
                   RowHeight="70"
                   ItemsSource="{Binding TodoItems}"
                   SelectedItem="{Binding SelectedItem}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
 
-                        <ViewCell.ContextActions>
-                            <MenuItem Text="{Binding TodoItem.Completed, 
+                            <ViewCell.ContextActions>
+                                <MenuItem Text="{Binding TodoItem.Completed, 
                                 Converter={StaticResource itemStatusToToggleCompletedTextConverter}}"
                                       Command="{Binding ToggleCompleted}" />
-                        </ViewCell.ContextActions>
-                        
-                        <Grid Padding="15,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                                <MenuItem Text="Delete"
+                                          Command="{Binding DeleteItem}"/>
+                            </ViewCell.ContextActions>
 
-                            <BoxView Grid.RowSpan="2" 
+                            <Grid Padding="15,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <BoxView Grid.RowSpan="2" 
                                      BackgroundColor="{Binding TodoItem.Completed, 
                                 Converter={StaticResource itemStatusToColorConverter}}" />
 
-                            <Label Grid.Column="1"
+                                <Label Grid.Column="1"
                                    Text="{Binding TodoItem.Title}"
                                    FontSize="Default" />
-                            <Label Grid.Column="1"
+                                <Label Grid.Column="1"
                                    Grid.Row="1"
                                    Text="{Binding TodoItem.Due, StringFormat='{0:d MMMM, yyyy}'}"
                                    FontSize="Micro" />
-                            <Label Grid.Column="1"
+                                <Label Grid.Column="1"
                                    Grid.Row="1"
                                    HorizontalTextAlignment="End"
                                    Text="Completed"
                                    IsVisible="{Binding TodoItem.Completed}"
                                    TextColor="{StaticResource ItemCompletedColor}"
                                    FontSize="Micro" />
-                        </Grid>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <ImageButton
+                Style="{StaticResource AddItemButton}"
+                Command="{Binding AddItem}" />
+
+        </AbsoluteLayout>
+
     </Grid>
-    
 </ContentPage>

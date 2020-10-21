@@ -2,7 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Color x:Key="PrimaryColor">#00C4C4</Color>
-    
+    <Color x:Key="SecondaryColor">#FF7400</Color>
+    <Color x:Key="ItemCompletedColor">#00E100</Color>
+    <Color x:Key="ItemActiveColor">#FF0000</Color>
+
     <Style TargetType="NavigationPage">
         <Setter Property="BarBackgroundColor" Value="{StaticResource PrimaryColor}" />
         <Setter Property="BarTextColor" Value="#FFFFFF" />
@@ -16,7 +19,14 @@
         <Setter Property="TextColor" Value="Black" />
     </Style>
 
-    <Color x:Key="ItemCompletedColor">#00E100</Color>
-    <Color x:Key="ItemActiveColor">#FF0000</Color>
+    <Style x:Key="AddItemButton" TargetType="ImageButton">
+        <Setter Property="AbsoluteLayout.LayoutBounds" Value="0.95,0.95,70,70" />
+        <Setter Property="AbsoluteLayout.LayoutFlags" Value="PositionProportional" />
+        <Setter Property="BackgroundColor" Value="{StaticResource SecondaryColor}" />
+        <Setter Property="CornerRadius" Value="40" />
+        <Setter Property="HeightRequest" Value="70" />
+        <Setter Property="WidthRequest" Value="70" />
+        <Setter Property="Source" Value="ic_add_icon_white.png" />
+    </Style>
 
 </ResourceDictionary>
